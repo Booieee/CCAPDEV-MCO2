@@ -1,0 +1,74 @@
+[
+  {
+    "_id": {
+      "$oid": "6860e392d23503b8e77f5bed"
+    },
+    "email": "hayley_jacobs@dlsu.edu.ph",
+    "firstname": "Hayley",
+    "lastname": "Jacobs",
+    "password": "123",
+    "role": "student",
+    "profilePicture": "/default.png",
+    "reservations": []
+  },
+  {
+    "_id": {
+      "$oid": "6860e434d23503b8e77f5bee"
+    },
+    "email": "alice_ohera@dlsu.edu.ph",
+    "firstname": "Alice",
+    "lastname": "O'hera",
+    "password": "12345678",
+    "role": "student",
+    "profilePicture": "/default.png",
+    "reservations": []
+  },
+  {
+    "_id": {
+      "$oid": "6860e465d23503b8e77f5bef"
+    },
+    "email": "bob_co@dlsu.edu.ph",
+    "firstname": "Bob",
+    "lastname": "Co",
+    "password": "124idiwhcewbcob",
+    "role": "student",
+    "profilePicture": "/default.png",
+    "reservations": []
+  },
+  {
+    "_id": {
+      "$oid": "6860e490d23503b8e77f5bf0"
+    },
+    "email": "megan_tan@dlsu.edu.ph",
+    "firstname": "Megan",
+    "lastname": "Tan",
+    "password": "125eohdwodjo",
+    "role": "student",
+    "profilePicture": "/default.png",
+    "reservations": []
+  },
+  {
+    "_id": {
+      "$oid": "6860e4b9d23503b8e77f5bf1"
+    },
+    "email": "alex_smith@dlsu.edu.ph",
+    "firstname": "Alex",
+    "lastname": "Smith",
+    "password": "126echodoor",
+    "role": "student",
+    "profilePicture": "/default.png",
+    "reservations": []
+  },
+  {
+    "_id": {
+      "$oid": "68740a66711bbe256a67eff3"
+    },
+    "email": "tech_lab@dlsu.edu.ph",
+    "firstname": "Lab",
+    "lastname": "Technician",
+    "password": "tech123",
+    "role": "technician",
+    "profilePicture": "/default.png",
+    "reservations": []
+  }
+]

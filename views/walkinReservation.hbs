@@ -1,0 +1,199 @@
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Walk-in Reservation (Technician)</h2>
+    
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <label for="student-email" class="form-label">Student Email:</label>
+            <input type="email" id="student-email" class="form-control" placeholder="Enter student's DLSU email">
+        </div>
+        <div class="col-md-6">
+            <label for="student-name" class="form-label">Student Name (if not registered):</label>
+            <input type="text" id="student-name" class="form-control" placeholder="Enter student's name">
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <label for="lab-dropdown" class="form-label">Select a Laboratory:</label>
+            <select id="lab-dropdown" class="form-select">
+                <option value="">Select a Laboratory</option>
+                {{#each labs}}
+                    <option value="{{labId}}">
+                    Lab {{labId}} - Room {{room}} ({{seats}} seats)
+                    </option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="timeslot-dropdown" class="form-label">Select a Timeslot:</label>
+            <select id="timeslot-dropdown" class="form-select">
+                <option value="">Select a Timeslot</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <label for="seat-dropdown" class="form-label">Select a Seat:</label>
+            <select id="seat-dropdown" class="form-select">
+                <option value="">Select a Seat</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="anonymous-checkbox" class="form-label">Options:</label>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="anonymous-checkbox">
+                <label class="form-check-label" for="anonymous-checkbox">
+                    Anonymous Reservation
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button id="create-walkin-reservation" class="btn btn-success btn-lg">Create Walk-in Reservation</button>
+    </div>
+
+    <div class="mt-5">
+        <h3>Recent Walk-in Reservations</h3>
+        <div id="recent-reservations" class="list-group">
+            <!-- Recent reservations will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        let laboratories = {{{json labs}}};
+        let currentUser = {{{json user}}};
+
+        // Populate timeslots when lab is selected
+        $(document).on("change", "#lab-dropdown", function () {
+            const selectedLabId = $(this).val();
+            const selectedLab = laboratories.find(lab => String(lab.labId) === String(selectedLabId));
+
+            const timeslotDropdown = $("#timeslot-dropdown").empty();
+            timeslotDropdown.append('<option value="">Select a Timeslot</option>');
+
+            if (selectedLab && selectedLab.timeslots) {
+                selectedLab.timeslots.forEach(slot => {
+                    const totalSeats = Object.keys(slot.seats).length;
+                    const availableSeats = Object.values(slot.seats).filter(Boolean).length;
+                    const label = `${slot.day} - ${slot.startTime} to ${slot.endTime} (${availableSeats}/${totalSeats} seats available)`;
+                    timeslotDropdown.append(`<option value="${slot.slotId}">${label}</option>`);
+                });
+            }
+        });
+
+        // Populate seats when timeslot is selected
+        $(document).on("change", "#timeslot-dropdown", function() {
+            const selectedLabId = $("#lab-dropdown").val();
+            const selectedSlotId = $(this).val();
+            
+            if (!selectedLabId || !selectedSlotId) {
+                $("#seat-dropdown").empty().append('<option value="">Select a Seat</option>');
+                return;
+            }
+
+            const selectedLab = laboratories.find(lab => String(lab.labId) === String(selectedLabId));
+            const selectedSlot = selectedLab.timeslots.find(slot => slot.slotId == selectedSlotId);
+
+            const seatDropdown = $("#seat-dropdown").empty();
+            seatDropdown.append('<option value="">Select a Seat</option>');
+
+            if (selectedSlot && selectedSlot.seats) {
+                Object.keys(selectedSlot.seats).forEach(seatId => {
+                    if (selectedSlot.seats[seatId]) { // seat is available
+                        seatDropdown.append(`<option value="${seatId}">${seatId}</option>`);
+                    }
+                });
+            }
+        });
+
+        // Create walk-in reservation
+        $("#create-walkin-reservation").click(function() {
+            const studentEmail = $("#student-email").val().trim();
+            const studentName = $("#student-name").val().trim();
+            const labId = $("#lab-dropdown").val();
+            const slotId = $("#timeslot-dropdown").val();
+            const seat = $("#seat-dropdown").val();
+            const isAnonymous = $("#anonymous-checkbox").prop("checked");
+
+            if (!studentEmail && !studentName) {
+                alert("Please enter either student email or name!");
+                return;
+            }
+
+            if (!labId || !slotId || !seat) {
+                alert("Please select lab, timeslot, and seat!");
+                return;
+            }
+
+            const reservationData = {
+                studentEmail,
+                studentName,
+                labId,
+                slotId,
+                seat,
+                anonymous: isAnonymous,
+                technicianEmail: currentUser.email
+            };
+
+            $.post("/walkin/create", reservationData, function(response) {
+                alert("Walk-in reservation created successfully!");
+                loadRecentReservations();
+                // Clear form
+                $("#student-email, #student-name").val("");
+                $("#lab-dropdown, #timeslot-dropdown, #seat-dropdown").val("");
+                $("#anonymous-checkbox").prop("checked", false);
+            }).fail(function(xhr, status, error) {
+                alert("Error creating walk-in reservation: " + error);
+            });
+        });
+
+        // Load recent walk-in reservations
+        function loadRecentReservations() {
+            $.get("/walkin/recent", function(reservations) {
+                const container = $("#recent-reservations");
+                container.empty();
+                
+                if (reservations.length === 0) {
+                    container.append('<div class="list-group-item">No recent walk-in reservations</div>');
+                    return;
+                }
+
+                reservations.forEach(res => {
+                    container.append(`
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>Student:</strong> ${res.studentName || res.studentEmail}<br>
+                                <strong>Lab:</strong> ${res.room} | <strong>Seat:</strong> ${res.seat}<br>
+                                <strong>Time:</strong> ${res.day} - ${res.startTime} to ${res.endTime}<br>
+                                <strong>Created by:</strong> ${res.technicianName}
+                            </div>
+                            <div>
+                                <button class="btn btn-danger btn-sm cancel-reservation" data-id="${res.id}">Cancel</button>
+                            </div>
+                        </div>
+                    `);
+                });
+            });
+        }
+
+        // Cancel reservation
+        $(document).on("click", ".cancel-reservation", function() {
+            const reservationId = $(this).data("id");
+            if (confirm("Are you sure you want to cancel this reservation?")) {
+                $.post("/walkin/cancel", { reservationId }, function(response) {
+                    alert("Reservation cancelled successfully!");
+                    loadRecentReservations();
+                }).fail(function(xhr, status, error) {
+                    alert("Error cancelling reservation: " + error);
+                });
+            }
+        });
+
+        // Load recent reservations on page load
+        $(document).ready(function() {
+            loadRecentReservations();
+        });
+    </script>
+</div> 

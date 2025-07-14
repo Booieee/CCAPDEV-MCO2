@@ -1,0 +1,96 @@
+<div class="container mt-5">
+    <!-- Viewing Profile -->
+    <div class="row profile-info">
+        <div class="col-md-6">
+            <h2>User Profile</h2>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" class="form-control" value="{{user.email}}" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="firstname" class="form-label">First Name</label>
+                <input type="text" id="firstname" class="form-control" value="{{user.firstname}}" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="lastname" class="form-label">Last Name</label>
+                <input type="text" id="lastname" class="form-control" value="{{user.lastname}}" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="profile-pic" class="form-label">Profile Picture</label><br>
+                <img id="profile-pic" src="{{user.profilePicture}}" alt="Profile Picture" style="max-width: 200px; max-height: 200px; border-radius: 10px;" />
+            </div>
+            <div class="mb-3">
+                <label for="reservations" class="form-label">Current Reservations</label>
+                <ul id="reservation-list" class="list-group">
+                    {{#if user.reservations.length}}
+                        {{#each user.reservations}}
+                        <li class="list-group-item">
+                            {{this.day}} – {{this.startTime}} to {{this.endTime}}, Room {{this.room}}, Seat {{this.seat}}
+                        </li>
+                        {{/each}}
+                    {{else}}
+                        <li class="list-group-item">No reservations found.</li>
+                    {{/if}}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Actions -->
+    <div class="profile-actions mb-4">
+        <button class="btn btn-primary" id="edit-btn">Edit Profile</button>
+        <form action="/profile/delete" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete your account?');">
+            <button class="btn btn-danger" type="submit">Delete Account</button>
+        </form>
+    </div>
+
+    <!-- Edit Profile Form (Initially Hidden) -->
+    <div class="row edit-form" style="display: none;">
+        <div class="col-md-6">
+            <h3>Edit Profile</h3>
+            <form action="/profile/edit" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="edit-email" class="form-label">Email</label>
+                    <input type="email" id="edit-email" name="email" class="form-control" value="{{user.email}}">
+                </div>
+                <div class="mb-3">
+                    <label for="edit-firstname" class="form-label">First Name</label>
+                    <input type="text" id="edit-firstname" name="firstname" class="form-control" value="{{user.firstname}}">
+                </div>
+                <div class="mb-3">
+                    <label for="edit-lastname" class="form-label">Last Name</label>
+                    <input type="text" id="edit-lastname" name="lastname" class="form-control" value="{{user.lastname}}">
+                </div>
+                <div class="mb-3">
+                    <label for="edit-profile-pic" class="form-label">Profile Picture</label><br>
+                    <input type="file" id="edit-profile-pic" name="profilePicture" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-secondary" id="cancel-btn" type="button">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    //View / EDIT PROFILE
+    $(document).ready(function () {
+        //"Edit Profile" button is clicked
+        $("#edit-btn").click(function () {
+            $("#edit-btn").hide();
+            $(".profile-info").hide();
+            $(".profile-actions").hide();
+            $(".edit-form").show();
+        });
+
+        // Handle cancel edit
+        $("#cancel-btn").click(function () {
+            $(".edit-form").hide();
+            $(".profile-info").show();
+            $(".profile-actions").show();
+            $("#edit-btn").show();
+        });
+    });
+</script>

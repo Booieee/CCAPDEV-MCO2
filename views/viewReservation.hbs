@@ -1,0 +1,196 @@
+<div class="container mt-5">
+    <h2 class="text-center mb-4">All Reservations</h2>
+    
+    <!-- Filter Options -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <label for="filter-lab" class="form-label">Filter by Lab:</label>
+            <select id="filter-lab" class="form-select">
+                <option value="">All Labs</option>
+                <option value="A1110">Lab 123 - A1110</option>
+                <option value="A1111">Lab 124 - A1111</option>
+                <option value="A1112">Lab 125 - A1112</option>
+                <option value="A1113">Lab 126 - A1113</option>
+                <option value="A1114">Lab 127 - A1114</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="filter-day" class="form-label">Filter by Day:</label>
+            <select id="filter-day" class="form-select">
+                <option value="">All Days</option>
+                <option value="June 6">June 6</option>
+                <option value="June 13">June 13</option>
+                <option value="June 20">June 20</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="filter-own" class="form-label">Show:</label>
+            <select id="filter-own" class="form-select">
+                <option value="">All Reservations</option>
+                <option value="own">My Reservations Only</option>
+                <option value="others">Others' Reservations Only</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">&nbsp;</label>
+            <button id="clear-filters" class="btn btn-secondary w-100">Clear Filters</button>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h5>Total Reservations</h5>
+                    <h3 id="total-count">{{reservations.length}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h5>My Reservations</h5>
+                    <h3 id="own-count">{{#countOwn reservations currentUser.email}}{{/countOwn}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h5>Today's Reservations</h5>
+                    <h3 id="today-count">{{#countToday reservations}}{{/countToday}}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h5>Anonymous</h5>
+                    <h3 id="anonymous-count">{{#countAnonymous reservations}}{{/countAnonymous}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reservations List -->
+    <div id="reservation-list" class="list-group">
+        {{#if reservations.length}}
+            {{#each reservations}}
+                <div class="list-group-item reservation-item" 
+                     data-lab="{{this.room}}" 
+                     data-day="{{this.day}}" 
+                     data-own="{{this.isOwnReservation}}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center mb-2">
+                                <h6 class="mb-0 me-3">
+                                    {{#if this.isAnonymous}}
+                                        <span class="text-muted">Anonymous</span>
+                                    {{else}}
+                                        {{this.name}}
+                                    {{/if}}
+                                </h6>
+                                {{#if this.isOwnReservation}}
+                                    <span class="badge bg-success">My Reservation</span>
+                                {{/if}}
+                                <span class="badge bg-primary ms-2">{{this.userRole}}</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <strong>Lab:</strong> {{this.room}}
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Day:</strong> {{this.day}}
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Time:</strong> {{this.startTime}} - {{this.endTime}}
+                                </div>
+                                <div class="col-md-3">
+                                    <strong>Seat:</strong> {{this.seat}}
+                                </div>
+                            </div>
+                            {{#unless this.isAnonymous}}
+                                <small class="text-muted">Email: {{this.email}}</small>
+                            {{/unless}}
+                        </div>
+                        <div class="ms-3">
+                            {{#if this.isOwnReservation}}
+                                <a href="/editreservations" class="btn btn-warning btn-sm">Edit</a>
+                            {{/if}}
+                            {{#if ../currentUser.role}}
+                                <a href="/profile/{{encodeURIComponent this.email}}" class="btn btn-info btn-sm">View Profile</a>
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        {{else}}
+            <div class="list-group-item">No reservations found.</div>
+        {{/if}}
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Filter functionality
+    function filterReservations() {
+        const labFilter = $('#filter-lab').val();
+        const dayFilter = $('#filter-day').val();
+        const ownFilter = $('#filter-own').val();
+        
+        $('.reservation-item').each(function() {
+            let show = true;
+            
+            if (labFilter && $(this).data('lab') !== labFilter) {
+                show = false;
+            }
+            
+            if (dayFilter && $(this).data('day') !== dayFilter) {
+                show = false;
+            }
+            
+            if (ownFilter === 'own' && $(this).data('own') !== true) {
+                show = false;
+            }
+            
+            if (ownFilter === 'others' && $(this).data('own') === true) {
+                show = false;
+            }
+            
+            $(this).toggle(show);
+        });
+        
+        updateCounts();
+    }
+    
+    function updateCounts() {
+        const visible = $('.reservation-item:visible').length;
+        const own = $('.reservation-item:visible[data-own="true"]').length;
+        const today = $('.reservation-item:visible').filter(function() {
+            return $(this).data('day') === 'June 6'; // Adjust based on current date
+        }).length;
+        const anonymous = $('.reservation-item:visible').filter(function() {
+            return $(this).find('h6').text().trim() === 'Anonymous';
+        }).length;
+        
+        $('#total-count').text(visible);
+        $('#own-count').text(own);
+        $('#today-count').text(today);
+        $('#anonymous-count').text(anonymous);
+    }
+    
+    // Event listeners
+    $('#filter-lab, #filter-day, #filter-own').change(filterReservations);
+    
+    $('#clear-filters').click(function() {
+        $('#filter-lab, #filter-day, #filter-own').val('');
+        filterReservations();
+    });
+    
+    // Auto-refresh every 30 seconds
+    setInterval(function() {
+        location.reload();
+    }, 30000);
+});
+</script>

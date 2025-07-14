@@ -1,0 +1,187 @@
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Search</h2>
+    
+    <!-- Search Tabs -->
+    <ul class="nav nav-tabs mb-4" id="searchTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="slots-tab" data-bs-toggle="tab" data-bs-target="#slots" type="button" role="tab">Search Available Slots</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">Search Users</button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="searchTabContent">
+        <!-- Search Available Slots -->
+        <div class="tab-pane fade show active" id="slots" role="tabpanel">
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <label for="search-lab" class="form-label">Laboratory:</label>
+                    <select id="search-lab" class="form-select">
+                        <option value="">All Labs</option>
+                        {{#each labs}}
+                            <option value="{{labId}}">Lab {{labId}} - {{room}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="search-date" class="form-label">Date:</label>
+                    <input type="date" id="search-date" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label for="search-time" class="form-label">Time:</label>
+                    <select id="search-time" class="form-select">
+                        <option value="">Any Time</option>
+                        <option value="7:30 AM">7:30 AM</option>
+                        <option value="8:30 AM">8:30 AM</option>
+                        <option value="9:30 AM">9:30 AM</option>
+                        <option value="10:30 AM">10:30 AM</option>
+                        <option value="11:30 AM">11:30 AM</option>
+                        <option value="12:30 PM">12:30 PM</option>
+                        <option value="1:30 PM">1:30 PM</option>
+                        <option value="2:30 PM">2:30 PM</option>
+                        <option value="3:30 PM">3:30 PM</option>
+                        <option value="4:30 PM">4:30 PM</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">&nbsp;</label>
+                    <button id="search-slots-btn" class="btn btn-primary w-100">Search Slots</button>
+                </div>
+            </div>
+
+            <div id="slots-results" class="mt-4">
+                <!-- Results will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Search Users -->
+        <div class="tab-pane fade" id="users" role="tabpanel">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="search-user-name" class="form-label">Search by Name:</label>
+                    <input type="text" id="search-user-name" class="form-control" placeholder="Enter name to search">
+                </div>
+                <div class="col-md-6">
+                    <label for="search-user-email" class="form-label">Search by Email:</label>
+                    <input type="email" id="search-user-email" class="form-control" placeholder="Enter email to search">
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <button id="search-users-btn" class="btn btn-primary">Search Users</button>
+                </div>
+            </div>
+
+            <div id="users-results" class="mt-4">
+                <!-- Results will be displayed here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let laboratories = {{{json labs}}};
+    let currentUser = {{{json user}}};
+
+    // Search available slots
+    $('#search-slots-btn').click(function() {
+        const labId = $('#search-lab').val();
+        const date = $('#search-date').val();
+        const time = $('#search-time').val();
+
+        $.get('/search/slots', { labId, date, time }, function(results) {
+            displaySlotResults(results);
+        }).fail(function(xhr, status, error) {
+            alert('Error searching slots: ' + error);
+        });
+    });
+
+    function displaySlotResults(results) {
+        const container = $('#slots-results');
+        container.empty();
+
+        if (results.length === 0) {
+            container.append('<div class="alert alert-info">No available slots found for your criteria.</div>');
+            return;
+        }
+
+        let html = '<div class="row">';
+        results.forEach(slot => {
+            html += `
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Lab ${slot.labId} - ${slot.room}</h5>
+                            <p class="card-text">
+                                <strong>Date:</strong> ${slot.day}<br>
+                                <strong>Time:</strong> ${slot.startTime} - ${slot.endTime}<br>
+                                <strong>Available Seats:</strong> ${slot.availableSeats}/${slot.totalSeats}
+                            </p>
+                            <a href="/reserve?lab=${slot.labId}&slot=${slot.slotId}" class="btn btn-success">Reserve Now</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        container.html(html);
+    }
+
+    // Search users
+    $('#search-users-btn').click(function() {
+        const name = $('#search-user-name').val().trim();
+        const email = $('#search-user-email').val().trim();
+
+        if (!name && !email) {
+            alert('Please enter either a name or email to search.');
+            return;
+        }
+
+        $.get('/search/users', { name, email }, function(results) {
+            displayUserResults(results);
+        }).fail(function(xhr, status, error) {
+            alert('Error searching users: ' + error);
+        });
+    });
+
+    function displayUserResults(results) {
+        const container = $('#users-results');
+        container.empty();
+
+        if (results.length === 0) {
+            container.append('<div class="alert alert-info">No users found for your search criteria.</div>');
+            return;
+        }
+
+        let html = '<div class="list-group">';
+        results.forEach(user => {
+            html += `
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6>${user.firstname} ${user.lastname}</h6>
+                        <small class="text-muted">${user.email}</small>
+                    </div>
+                    <a href="/profile/${encodeURIComponent(user.email)}" class="btn btn-outline-primary btn-sm">View Profile</a>
+                </div>
+            `;
+        });
+        html += '</div>';
+        container.html(html);
+    }
+
+    // Auto-search when date changes
+    $('#search-date').change(function() {
+        if ($('#search-lab').val() || $('#search-time').val()) {
+            $('#search-slots-btn').click();
+        }
+    });
+
+    // Auto-search when lab or time changes
+    $('#search-lab, #search-time').change(function() {
+        if ($('#search-date').val()) {
+            $('#search-slots-btn').click();
+        }
+    });
+</script> 

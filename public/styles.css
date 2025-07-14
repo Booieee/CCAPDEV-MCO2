@@ -1,0 +1,67 @@
+.navbar{
+    background-color: rgb(102, 192, 102);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.center-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+
+.wrapper {
+    position: relative;
+    width: 400px;
+    transition: height 0.5s ease;
+    height: 650px;
+    overflow: hidden;
+}
+
+.form {
+    position: absolute;
+    width: 400px;
+    background: #ebebeb;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 120px 32px 64px;
+    border: 1px solid #000000;
+    transition: all 0.5s ease;
+    opacity: 0;
+    left: 100%;
+    transform: translateX(-50%);
+}
+
+.title-login, .title-register {
+    transition: all 0.5s ease;
+    position: relative;
+}
+
+.login-form {
+    left: 50%;
+    opacity: 1;
+}
+
+#account-login-info > *,
+#account-creation-info > * {
+    margin-bottom: 5px;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+    transition: 0.3s;
+}
+
+a:hover{
+    text-decoration: underline;
+}

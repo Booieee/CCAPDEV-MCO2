@@ -1,0 +1,39 @@
+<!-- Sidebar -->
+  <div class="position-fixed start-0 top-0 vh-100 p-3 w-25 bg-light" style="margin-top: 60px;">
+    <ul class="list-unstyled">
+      <li><a class="btn btn-success w-100 my-3" href="/people">People</a></li>
+      <li><a class="btn btn-success w-100 my-3" href="/reserve">Reserve Lab Timeslot</a></li>
+      <li><a class="btn btn-success w-100 my-3" href="/viewreservations">View All Reservations</a></li>
+      <li><a class="btn btn-success w-100 my-3" href="/editreservations">Edit Reservations</a></li>
+      <li><a class="btn btn-info w-100 my-3" href="/search">Search</a></li>
+      <li><a class="btn btn-secondary w-100 my-3" href="/">Return to Title Page</a></li>
+      {{#if isAdmin}}
+        <li><a class="btn btn-success w-100 my-3" href="/walkin">Walk-in Reservation (Admin)</a></li>
+      {{/if}}
+      {{#if isTechnician}}
+        <li><a class="btn btn-warning w-100 my-3" href="/walkin">Walk-in Reservation (Technician)</a></li>
+        <li><a class="btn btn-danger w-100 my-3" href="/manage-reservations">Manage Reservations</a></li>
+      {{/if}}
+    </ul>
+  </div>
+
+  <!-- Main Content (Calendar) -->
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-3" style="width:550px; height:550px">
+      <h3 class="text-center">JUNE</h3>
+      <table class="table table-bordered text-center h-100" style="font-size: 18px;">
+        <thead>
+          <tr>
+            <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td></tr>
+          <tr><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td>14</td></tr>
+          <tr><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td></tr>
+          <tr><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td></tr>
+          <tr><td>29</td><td>30</td><td>31</td><td></td><td></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
