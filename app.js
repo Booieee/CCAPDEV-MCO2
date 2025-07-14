@@ -46,6 +46,9 @@ app.engine('hbs', exphbs.engine({
     },
     encodeURIComponent: function(str) {
       return encodeURIComponent(str);
+    },
+    eq: function(a, b) {
+      return a === b;
     }
   }
 }));
@@ -115,6 +118,12 @@ app.get('/reservation/details/:labId/:slotId/:seatId', reservationController.get
 app.get('/search', reservationController.renderSearchPage);
 app.get('/search/slots', reservationController.searchSlots);
 app.get('/search/users', reservationController.searchUsers);
+
+// Add manage reservations route for technicians/admins
+app.get('/manage-reservations', reservationController.manageReservations);
+
+// Technician cancel reservation endpoint
+app.post('/manage-reservations/cancel', reservationController.technicianCancelReservation);
 
 //logout and destroy all session data
 app.get('/logout', (req, res) => {

@@ -623,3 +623,74 @@ exports.searchUsers = (req, res) => {
 
   res.json(results);
 };
+
+// Manage Reservations for Technicians/Admins
+exports.manageReservations = (req, res) => {
+  const users = getUsers();
+  const labs = getLabs();
+  const currentUser = users.find(u => u.email === req.session.userId);
+
+  if (!currentUser || currentUser.role !== 'technician') {
+    return res.status(403).send('Access denied. Only technicians can access this page.');
+  }
+
+  let allReservations = [];
+  users.forEach(user => {
+    if (user.reservations && Array.isArray(user.reservations)) {
+      user.reservations.forEach(reservation => {
+        allReservations.push({
+          name: reservation.name || `${user.firstname} ${user.lastname}`,
+          email: user.email,
+          room: reservation.room,
+          day: reservation.day,
+          startTime: reservation.startTime,
+          endTime: reservation.endTime,
+          seat: reservation.seat,
+          isAnonymous: reservation.name === "Anonymous",
+          isWalkin: reservation.isWalkin || false,
+          userRole: user.role
+        });
+      });
+    }
+  });
+
+  res.render('manageReservations', {
+    currentUser,
+    reservations: allReservations,
+    title: 'Manage Reservations - Lab Reservations'
+  });
+};
+
+// Technician cancels any reservation
+exports.technicianCancelReservation = (req, res) => {
+  const { email, room, day, startTime, endTime, seat } = req.body;
+  const users = getUsers();
+  const labs = getLabs();
+  const currentUser = users.find(u => u.email === req.session.userId);
+
+  if (!currentUser || currentUser.role !== 'technician') {
+    return res.status(403).send('Access denied. Only technicians can cancel reservations.');
+  }
+
+  const user = users.find(u => u.email === email);
+  if (!user) return res.status(404).send('User not found');
+
+  // Remove reservation from user's list
+  user.reservations = user.reservations.filter(r =>
+    !(r.room === room && r.day === day && r.startTime === startTime && r.endTime === endTime && r.seat === seat)
+  );
+
+  // Free up the seat in labs.json
+  const lab = labs.find(l => l.room === room);
+  const slot = lab ? lab.timeslots.find(s =>
+    s.day === day &&
+    s.startTime === startTime &&
+    s.endTime === endTime
+  ) : null;
+  if (slot) slot.seats[seat] = true;
+
+  saveUsers(users);
+  saveLabs(labs);
+
+  res.status(200).send('Reservation cancelled successfully');
+};

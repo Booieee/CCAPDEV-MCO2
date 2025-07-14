@@ -2,7 +2,11 @@
   <div class="position-fixed start-0 top-0 vh-100 p-3 w-25 bg-light" style="margin-top: 60px;">
     <ul class="list-unstyled">
       <li><a class="btn btn-success w-100 my-3" href="/people">People</a></li>
-      <li><a class="btn btn-success w-100 my-3" href="/reserve">Reserve Lab Timeslot</a></li>
+      <li>
+        {{#unless isTechnician}}
+          <a class="btn btn-success w-100 my-3" href="/reserve">Reserve Lab Timeslot</a>
+        {{/unless}}
+      </li>
       <li><a class="btn btn-success w-100 my-3" href="/viewreservations">View All Reservations</a></li>
       <li><a class="btn btn-success w-100 my-3" href="/editreservations">Edit Reservations</a></li>
       <li><a class="btn btn-info w-100 my-3" href="/search">Search</a></li>

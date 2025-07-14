@@ -117,7 +117,9 @@
                                 <a href="/editreservations" class="btn btn-warning btn-sm">Edit</a>
                             {{/if}}
                             {{#if ../currentUser.role}}
-                                <a href="/profile/{{encodeURIComponent this.email}}" class="btn btn-info btn-sm">View Profile</a>
+                                {{#unless this.isAnonymous}}
+                                    <a href="/profile/{{encodeURIComponent this.email}}" class="btn btn-info btn-sm">View Profile</a>
+                                {{/unless}}
                             {{/if}}
                         </div>
                     </div>

@@ -111,7 +111,6 @@ exports.renderDashboard = async (req, res) => {
   }
 
   res.render('dashboard', {
-    isAdmin: user.role === 'admin',
     isTechnician: user.role === 'technician',
     user,
     profilePic: user.profilePicture,
@@ -126,12 +125,12 @@ exports.renderPeoplePage = (req, res) => {
   const currentUserEmail = req.session.userId; // the logged-in user's email
   const currentUser = findUserByEmail(currentUserEmail);
 
-  // Filter out the logged-in user + admins (unless current user is admin or technician)
+  // Filter out the logged-in user + admins (unless current user is technician)
   let visibleUsers;
-  if (currentUser.role === 'admin' || currentUser.role === 'technician') {
+  if (currentUser.role === 'technician') {
     visibleUsers = allUsers.filter(u => u.email !== currentUserEmail);
   } else {
-    visibleUsers = allUsers.filter(u => u.email !== currentUserEmail && u.role !== 'admin' && u.role !== 'technician');
+    visibleUsers = allUsers.filter(u => u.email !== currentUserEmail && u.role !== 'technician');
   }
 
   // Ensure all users have a profilePicture
@@ -198,7 +197,7 @@ exports.renderUserProfile = (req, res) => {
     return res.status(401).send('Please log in to view profiles');
   }
 
-  // Students can't view admin/technician profiles unless they're admin/technician themselves
+  // Students can't view technician profiles unless they're technician themselves
   if (targetUser.role !== 'student' && currentUser.role === 'student') {
     return res.status(403).send('Access denied');
   }

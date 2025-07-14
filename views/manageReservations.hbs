@@ -1,0 +1,72 @@
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Manage Reservations</h2>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Lab</th>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Seat</th>
+                <th>Type</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each reservations}}
+            <tr>
+                <td>{{#if this.isAnonymous}}<span class="text-muted">Anonymous</span>{{else}}{{this.name}}{{/if}}</td>
+                <td>{{this.email}}</td>
+                <td>{{this.room}}</td>
+                <td>{{this.day}}</td>
+                <td>{{this.startTime}} - {{this.endTime}}</td>
+                <td>{{this.seat}}</td>
+                <td>
+                    {{#if this.isAnonymous}}Anonymous{{else}}{{#if this.isWalkin}}Walk-in{{else}}Regular{{/if}}{{/if}}
+                </td>
+                <td>
+                  {{#if ../currentUser.role}}
+                    {{#if (eq ../currentUser.role 'technician')}}
+                      <button class="btn btn-danger btn-sm cancel-btn"
+                        data-email="{{this.email}}"
+                        data-room="{{this.room}}"
+                        data-day="{{this.day}}"
+                        data-start="{{this.startTime}}"
+                        data-end="{{this.endTime}}"
+                        data-seat="{{this.seat}}">
+                        Cancel
+                      </button>
+                    {{else}}
+                      <button class="btn btn-danger btn-sm" disabled>Cancel</button>
+                    {{/if}}
+                  {{else}}
+                    <button class="btn btn-danger btn-sm" disabled>Cancel</button>
+                  {{/if}}
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+<script>
+$(document).on('click', '.cancel-btn', function() {
+    if (!confirm('Are you sure you want to cancel this reservation?')) return;
+    const btn = $(this);
+    btn.prop('disabled', true).text('Cancelling...');
+    $.post('/manage-reservations/cancel', {
+        email: btn.data('email'),
+        room: btn.data('room'),
+        day: btn.data('day'),
+        startTime: btn.data('start'),
+        endTime: btn.data('end'),
+        seat: btn.data('seat')
+    }, function(response) {
+        btn.closest('tr').remove();
+        alert('Reservation cancelled successfully!');
+    }).fail(function(xhr) {
+        alert('Failed to cancel reservation: ' + xhr.responseText);
+        btn.prop('disabled', false).text('Cancel');
+    });
+});
+</script> 
