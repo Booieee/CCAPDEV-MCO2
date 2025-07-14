@@ -274,7 +274,7 @@ exports.deleteAccount = (req, res) => {
   users = users.filter(u => u.email !== email);
   req.session.destroy(() => {
     saveUsers(users);
-    res.redirect('/titlepage.html');
+    res.redirect('/login'); // Redirect to login page after account deletion
   });
 };
 

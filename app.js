@@ -66,6 +66,7 @@ const reservationController = require('./controller/reservationController');
 
 //titlepage rendering
 app.get('/', (req, res) => res.render('login', {}));
+app.get('/login', (req, res) => res.render('login', {}));
 
 //login and creation handling
 app.post('/login', userController.loginUser);
