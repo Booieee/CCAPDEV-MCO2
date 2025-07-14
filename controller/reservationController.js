@@ -87,6 +87,19 @@ exports.createReservation = (req, res) => {
     return res.status(400).send("Seat not available");
   }
 
+  // Check if user already has a reservation for this seat, lab, day, and timeslot
+  const duplicate = (user.reservations || []).some(r =>
+    r.labId === parseInt(labId) &&
+    r.seat === seat &&
+    r.day === slot.day &&
+    r.startTime === slot.startTime &&
+    r.endTime === slot.endTime
+  );
+  if (duplicate) {
+    console.error("User already has a reservation for this seat, lab, and timeslot");
+    return res.status(400).send("You already have a reservation for this seat, lab, and timeslot.");
+  }
+
   const reservation = {
     name: anonymous === 'true' ? "Anonymous" : user.firstname,
     labId: parseInt(labId),
@@ -145,9 +158,13 @@ exports.showAllReservations = (req, res) => {
     return dateA - dateB;
   });
 
+  // Get labs for filter dropdown
+  const labs = getLabs().map(lab => ({ labId: lab.labId, room: lab.room }));
+
   res.render('viewReservation', { 
     reservations: allReservations,
     currentUser,
+    labs, // pass labs to view
     title: 'View All Reservations - Lab Reservations'
   });
 };
@@ -534,13 +551,9 @@ exports.searchSlots = (req, res) => {
     }
 
     lab.timeslots.forEach(slot => {
-      // Filter by date if specified
-      if (date) {
-        const slotDate = new Date(slot.day + ', 2024');
-        const searchDate = new Date(date);
-        if (slotDate.toDateString() !== searchDate.toDateString()) {
-          return;
-        }
+      // Filter by date if specified (compare as string)
+      if (date && slot.day !== date) {
+        return;
       }
 
       // Filter by time if specified

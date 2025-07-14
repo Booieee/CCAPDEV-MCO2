@@ -125,122 +125,17 @@
         </div>
     </div>
 
-    <!-- Lab Layouts -->
-    <div class="lab-layout-seat20 d-none">
-        <div class="left-table">
-            <button class="seat" id="seat-A1">A1</button>
-            <button class="seat" id="seat-A2">A2</button>
-            <button class="seat" id="seat-A3">A3</button>
-            <button class="seat" id="seat-A4">A4</button>
-            <button class="seat" id="seat-A5">A5</button>
-        </div>
-        <div class="center-container">
-            <div class="center-table-1">
-                <button class="seat" id="seat-B1">B1</button>
-                <button class="seat" id="seat-B2">B2</button>
-                <button class="seat" id="seat-B3">B3</button>
-                <button class="seat" id="seat-B4">B4</button>
-                <button class="seat" id="seat-B5">B5</button>
-            </div>
-
-            <div class="center-table-2">
-                <button class="seat" id="seat-C1">C1</button>
-                <button class="seat" id="seat-C2">C2</button>
-                <button class="seat" id="seat-C3">C3</button>
-                <button class="seat" id="seat-C4">C4</button>
-                <button class="seat" id="seat-C5">C5</button>
-            </div>
-        </div>
-        
-
-        <div class="right-table">
-            <button class="seat" id="seat-D1">D1</button>
-            <button class="seat" id="seat-D2">D2</button>
-            <button class="seat" id="seat-D3">D3</button>
-            <button class="seat" id="seat-D4">D4</button>
-            <button class="seat" id="seat-D5">D5</button>
+    <!-- Shopping Cart Button -->
+    <div class="position-relative mb-3">
+        <div class="position-absolute bottom-2 end-0 p-2 bg-info text-white" style="z-index:2;">
+            <label for="shopping-cart">Finalize Reservation</label>
+            <button id="shopping-cart" class="btn btn-light">
+                <img src="shopping_cart.png" alt="Cart" width="30">
+            </button>
         </div>
     </div>
-
-    <div class="lab-layout-seat15 d-none">
-        <div class="left-table">
-            <button class="seat" id="seat-A1">A1</button>
-            <button class="seat" id="seat-A2">A2</button>
-            <button class="seat" id="seat-A3">A3</button>
-            <button class="seat" id="seat-A4">A4</button>
-            <button class="seat" id="seat-A5">A5</button>
-        </div>
-        <div class="center-container">
-            <div class="center-table-1">
-                <button class="seat" id="seat-B1">B1</button>
-                <button class="seat" id="seat-B2">B2</button>
-                <button class="seat" id="seat-B3">B3</button>
-                <button class="seat" id="seat-B4">B4</button>
-                <button class="seat" id="seat-B5">B5</button>
-            </div>
-
-            <div class="right-table">
-                <button class="seat" id="seat-C1">C1</button>
-                <button class="seat" id="seat-C2">C2</button>
-                <button class="seat" id="seat-C3">C3</button>
-                <button class="seat" id="seat-C4">C4</button>
-                <button class="seat" id="seat-C5">C5</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="lab-layout-seat25 d-none">
-        <div class="left-table">
-            <button class="seat" id="seat-A1">A1</button>
-            <button class="seat" id="seat-A2">A2</button>
-            <button class="seat" id="seat-A3">A3</button>
-            <button class="seat" id="seat-A4">A4</button>
-            <button class="seat" id="seat-A5">A5</button>
-        </div>
-
-        <div class="center-container">
-            <div class="center-table-1">
-                <button class="seat" id="seat-B1">B1</button>
-                <button class="seat" id="seat-B2">B2</button>
-                <button class="seat" id="seat-B3">B3</button>
-                <button class="seat" id="seat-B4">B4</button>
-                <button class="seat" id="seat-B5">B5</button>
-            </div>
-
-            <div class="center-table-2">
-                <button class="seat" id="seat-C1">C1</button>
-                <button class="seat" id="seat-C2">C2</button>
-                <button class="seat" id="seat-C3">C3</button>
-                <button class="seat" id="seat-C4">C4</button>
-                <button class="seat" id="seat-C5">C5</button>
-            </div>
-
-            <div class="center-table-3">
-                <button class="seat" id="seat-D1">D1</button>
-                <button class="seat" id="seat-D2">D2</button>
-                <button class="seat" id="seat-D3">D3</button>
-                <button class="seat" id="seat-D4">D4</button>
-                <button class="seat" id="seat-D5">D5</button>
-            </div>
-        </div>
-
-        <div class="right-table">
-            <button class="seat" id="seat-E1">E1</button>
-            <button class="seat" id="seat-E2">E2</button>
-            <button class="seat" id="seat-E3">E3</button>
-            <button class="seat" id="seat-E4">E4</button>
-            <button class="seat" id="seat-E5">E5</button>
-        </div>
-    </div>
-
-     <div class="position-relative">
-        <div class="position-absolute bottom-2 end-0 p-2 bg-info text-white">
-                <label for="shopping-cart">Finalize Reservation</label>
-                <button id="shopping-cart" class="btn btn-light">
-                    <img src="shopping_cart.png" alt="Cart" width="30">
-                </button>
-        </div>
-    </div>
+    <!-- Dynamic Seat Layout -->
+    <div id="dynamic-seat-layout" class="mt-4"></div>
 
     <div class="modal fade" id="reservation-finalization" tabindex="-1" aria-labelledby="finalizeReservation" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -277,42 +172,127 @@
             }
         }
 
-        //Reservation System Code
-        $(document).ready(function(){
-            $(".seat").click(function(){
-                // Check if lab and timeslot are selected
+        $(document).ready(function() {
+            // Dynamically render seat layout based on selected lab/timeslot
+            function renderSeatLayout(seats) {
+                const seatContainer = $("#dynamic-seat-layout");
+                seatContainer.empty();
+                if (!seats) return;
+                // Group seats by row letter (A, B, C, ...)
+                const seatRows = {};
+                Object.keys(seats).forEach(seatId => {
+                    const row = seatId.charAt(0);
+                    if (!seatRows[row]) seatRows[row] = [];
+                    seatRows[row].push(seatId);
+                });
+                // Sort rows alphabetically and seats within each row
+                const sortedRows = Object.keys(seatRows).sort();
+                let html = '<div class="d-flex flex-column align-items-center">';
+                sortedRows.forEach(row => {
+                    html += '<div class="d-flex mb-2">';
+                    seatRows[row].sort((a, b) => a.localeCompare(b, undefined, {numeric: true})).forEach(seatId => {
+                        html += `<button class="seat" id="seat-${seatId}">${seatId}</button>`;
+                    });
+                    html += '</div>';
+                });
+                html += '</div>';
+                seatContainer.html(html);
+            }
+
+            function updateSeatLayout() {
                 const selectedLabId = $("#lab-dropdown").val();
                 const selectedSlotId = $("#timeslot-dropdown").val();
-                
+                const laboratories = {{{json labs}}};
+                const selectedLab = laboratories.find(lab => String(lab.labId) === String(selectedLabId));
+                const selectedSlot = selectedLab ? selectedLab.timeslots.find(slot => slot.slotId == selectedSlotId) : null;
+                renderSeatLayout(selectedSlot ? selectedSlot.seats : null);
+                // After rendering, update seat availability
+                updateSeatAvailability();
+            }
+
+            function updateSeatAvailability() {
+                const selectedLabId = $("#lab-dropdown").val();
+                const selectedSlotId = $("#timeslot-dropdown").val();
+                $(".seat").removeClass("reserved reserved-by-user").prop("disabled", false);
+                $(".seat").attr("title", "");
+                if (!selectedLabId || !selectedSlotId) return;
+                const laboratories = {{{json labs}}};
+                const selectedLab = laboratories.find(lab => String(lab.labId) === String(selectedLabId));
+                const selectedSlot = selectedLab ? selectedLab.timeslots.find(slot => slot.slotId == selectedSlotId) : null;
+                if (selectedSlot && selectedSlot.seats) {
+                    Object.keys(selectedSlot.seats).forEach(seatId => {
+                        if (!selectedSlot.seats[seatId]) { // seat is reserved (false)
+                            $(`#seat-${seatId}`).addClass("reserved").prop("disabled", true);
+                            // Get reservation details for this seat
+                            $.get(`/reservation/details/${selectedLabId}/${selectedSlotId}/${seatId}`, function(reservation) {
+                                if (reservation && reservation.name && reservation.name !== "Anonymous") {
+                                    $(`#seat-${seatId}`).attr("title", `Reserved by: ${reservation.name}`);
+                                    $(`#seat-${seatId}`).addClass("reserved-by-user").data("user-email", reservation.userEmail);
+                                } else {
+                                    $(`#seat-${seatId}`).attr("title", "Reserved anonymously");
+                                }
+                            }).fail(function() {
+                                $(`#seat-${seatId}`).attr("title", "Reserved");
+                            });
+                        }
+                    });
+                }
+                // Mark seats in the cart for the current lab/timeslot as reserved
+                reservationCart.forEach(res => {
+                    if (String(res.labId) === String(selectedLabId) && String(res.slotId) === String(selectedSlotId)) {
+                        $(`#seat-${res.seat}`).addClass("reserved").prop("disabled", true).attr("title", "Reserved (in cart)");
+                    }
+                });
+            }
+
+            // Populate timeslots when lab changes
+            $(document).on("change", "#lab-dropdown", function () {
+                const selectedLabId = $(this).val();
+                const laboratories = {{{json labs}}};
+                const selectedLab = laboratories.find(lab => String(lab.labId) === String(selectedLabId));
+                const timeslotDropdown = $("#timeslot-dropdown").empty();
+                timeslotDropdown.append('<option value="">Select a Timeslot</option>');
+                if (selectedLab && selectedLab.timeslots) {
+                    selectedLab.timeslots.forEach(slot => {
+                        const totalSeats = Object.keys(slot.seats).length;
+                        const availableSeats = Object.values(slot.seats).filter(Boolean).length;
+                        const label = `${slot.day} - ${slot.startTime} to ${slot.endTime} (${availableSeats}/${totalSeats} seats available)`;
+                        timeslotDropdown.append(`<option value="${slot.slotId}">${label}</option>`);
+                    });
+                }
+                updateSeatLayout();
+            });
+
+            // Update seat layout and availability when timeslot changes
+            $(document).on("change", "#timeslot-dropdown", function() {
+                updateSeatLayout();
+            });
+
+            // Delegate seat click events to dynamically created buttons
+            $(document).on("click", ".seat", function(){
+                const selectedLabId = $("#lab-dropdown").val();
+                const selectedSlotId = $("#timeslot-dropdown").val();
                 if (!selectedLabId) {
                     alert("Please select a laboratory first!");
                     return;
                 }
-                
                 if (!selectedSlotId) {
                     alert("Please select a timeslot first!");
                     return;
                 }
-
-                // Check if seat is already reserved
                 if ($(this).hasClass("reserved")) {
                     alert("Seat is already reserved!");
                     return;
                 }
-
-                const laboratories = {{{json labs}}}; //labs passed from the controller
-                let seatId = $(this).attr("id").replace("seat-", ""); // Get seat ID
+                const laboratories = {{{json labs}}};
+                let seatId = $(this).attr("id").replace("seat-", "");
                 let selectedLab = laboratories.find(lab => String(lab.labId) === String(selectedLabId));
                 let selectedSlot = selectedLab.timeslots.find(slot => slot.slotId == selectedSlotId);
-                
-                console.log("seat selected:", seatId);
-
                 $("#reservation-confirmation .modal-body").html(`
                     <p>Room: ${selectedLab.room}</p>
                     <p>Day: ${selectedSlot.day}</p>
                     <p>Start Time: ${selectedSlot.startTime} --- End Time: ${selectedSlot.endTime}</p>
                     <p>Seat Number: ${seatId}</p>
-
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="anonymous-checkbox">
                         <label class="form-check-label" for="anonymous-checkbox">
@@ -320,13 +300,10 @@
                         </label>
                     </div>
                 `);
-
                 $("#reservation-confirmation").modal("show");
-
                 $("#confirm-reservation").off("click").on("click", function () {
                     const isAnonymous = $("#anonymous-checkbox").prop("checked");
                     const firstname = $("#user-firstname").val();
-
                     reservationCart.push({
                         name: isAnonymous ? "Anonymous" : firstname,
                         labId: selectedLabId,
@@ -337,110 +314,26 @@
                         slotId: selectedSlotId,
                         seat: seatId
                     });
-
-                    // Disable button visually
                     $(`#seat-${seatId}`).addClass("reserved").prop("disabled", true);
                     $("#reservation-confirmation").modal("hide");
-                    
                     console.log("Reservation added to cart:", reservationCart);
                 });
-                
                 $("#cancel-reservation").click(function(){
                     $("#reservation-confirmation").modal("hide");
                 });
             });
+
+            // Handle clicking on reserved seats to view user profile
+            $(document).on("click", ".seat.reserved-by-user", function() {
+                const userEmail = $(this).data("user-email");
+                if (userEmail) {
+                    window.open(`/profile/${encodeURIComponent(userEmail)}`, '_blank');
+                }
+            });
+
+            // Initial render (in case both are pre-selected)
+            updateSeatLayout();
         });
-
-        
-        //populating the timeslots
-        $(document).on("change", "#lab-dropdown", function () {
-            const selectedLabId = $(this).val();
-            const laboratories = {{{json labs}}}; // labs passed from the controller
-            const selectedLab = laboratories.find(lab => String(lab.labId) === String(selectedLabId));
-
-            const timeslotDropdown = $("#timeslot-dropdown").empty();
-            timeslotDropdown.append('<option value="">Select a Timeslot</option>');
-
-            if (selectedLab && selectedLab.timeslots) {
-                selectedLab.timeslots.forEach(slot => {
-                    const totalSeats = Object.keys(slot.seats).length;
-                    const availableSeats = Object.values(slot.seats).filter(Boolean).length;
-                    const label = `${slot.day} - ${slot.startTime} to ${slot.endTime} (${availableSeats}/${totalSeats} seats available)`;
-                    timeslotDropdown.append(`<option value="${slot.slotId}">${label}</option>`);
-                });
-            }
-        });
-        
-        //displaying the seats
-        $(document).on("change", "#lab-dropdown", function (){
-            let selectedLabId = $(this).val();
-            // Hide all seat layouts
-            $(".lab-layout-seat20, .lab-layout-seat15, .lab-layout-seat25").addClass("d-none");
-
-            // Show the correct layout based on selected lab
-            if (selectedLabId === "123" || selectedLabId === "125" || selectedLabId === "127") {
-                $(".lab-layout-seat20").removeClass("d-none");
-            } else if (selectedLabId === "126") {
-                $(".lab-layout-seat15").removeClass("d-none");
-            } else if (selectedLabId === "124") {
-                $(".lab-layout-seat25").removeClass("d-none");
-            }
-
-            // Clear timeslot dropdown when lab changes
-            $("#timeslot-dropdown").val("").trigger("change");
-        });
-
-        // Update seat availability when timeslot is selected
-        $(document).on("change", "#timeslot-dropdown", function() {
-            const selectedLabId = $("#lab-dropdown").val();
-            const selectedSlotId = $(this).val();
-            
-            if (!selectedLabId || !selectedSlotId) {
-                // Reset all seats to available
-                $(".seat").removeClass("reserved").prop("disabled", false);
-                $(".seat").attr("title", "");
-                return;
-            }
-
-            const laboratories = {{{json labs}}};
-            const selectedLab = laboratories.find(lab => String(lab.labId) === String(selectedLabId));
-            const selectedSlot = selectedLab.timeslots.find(slot => slot.slotId == selectedSlotId);
-
-            // Reset all seats first
-            $(".seat").removeClass("reserved").prop("disabled", false);
-            $(".seat").attr("title", "");
-
-            // Mark reserved seats based on the selected timeslot
-            if (selectedSlot && selectedSlot.seats) {
-                Object.keys(selectedSlot.seats).forEach(seatId => {
-                    if (!selectedSlot.seats[seatId]) { // seat is reserved (false)
-                        $(`#seat-${seatId}`).addClass("reserved").prop("disabled", true);
-                        
-                        // Get reservation details for this seat
-                        $.get(`/reservation/details/${selectedLabId}/${selectedSlotId}/${seatId}`, function(reservation) {
-                            if (reservation && reservation.name && reservation.name !== "Anonymous") {
-                                $(`#seat-${seatId}`).attr("title", `Reserved by: ${reservation.name}`);
-                                $(`#seat-${seatId}`).addClass("reserved-by-user").data("user-email", reservation.userEmail);
-                            } else {
-                                $(`#seat-${seatId}`).attr("title", "Reserved anonymously");
-                            }
-                        }).fail(function() {
-                            $(`#seat-${seatId}`).attr("title", "Reserved");
-                        });
-                    }
-                });
-            }
-        });
-
-        // Handle clicking on reserved seats to view user profile
-        $(document).on("click", ".seat.reserved-by-user", function() {
-            const userEmail = $(this).data("user-email");
-            if (userEmail) {
-                window.open(`/profile/${encodeURIComponent(userEmail)}`, '_blank');
-            }
-        });
-
-        // Note: Seat click handling is now done in the main reservation system code above
 
         //Reservation Shopping Cart
         $(document).ready(function () {

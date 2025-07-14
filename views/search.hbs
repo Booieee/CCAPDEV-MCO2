@@ -27,7 +27,10 @@
                 </div>
                 <div class="col-md-3">
                     <label for="search-date" class="form-label">Date:</label>
-                    <input type="date" id="search-date" class="form-control">
+                    <select id="search-date" class="form-select">
+                        <option value="">All Dates</option>
+                        <!-- Dates will be populated by JS -->
+                    </select>
                 </div>
                 <div class="col-md-3">
                     <label for="search-time" class="form-label">Time:</label>
@@ -85,11 +88,45 @@
     let laboratories = {{{json labs}}};
     let currentUser = {{{json user}}};
 
+    // Populate date dropdown with unique dates for the selected lab
+    function populateDateDropdownForLab(labId) {
+        let dateSet = new Set();
+        if (labId) {
+            const lab = laboratories.find(l => String(l.labId) === String(labId));
+            if (lab) {
+                lab.timeslots.forEach(slot => {
+                    dateSet.add(slot.day);
+                });
+            }
+        } else {
+            // If no lab selected, show all dates from all labs
+            laboratories.forEach(lab => {
+                lab.timeslots.forEach(slot => {
+                    dateSet.add(slot.day);
+                });
+            });
+        }
+        const dateDropdown = $('#search-date');
+        dateDropdown.empty();
+        dateDropdown.append('<option value="">All Dates</option>');
+        Array.from(dateSet).sort((a, b) => new Date(a + ', 2024') - new Date(b + ', 2024')).forEach(date => {
+            dateDropdown.append(`<option value="${date}">${date}</option>`);
+        });
+    }
+    $(document).ready(function() {
+        populateDateDropdownForLab($('#search-lab').val());
+        $('#search-lab').change(function() {
+            populateDateDropdownForLab($(this).val());
+        });
+    });
+
     // Search available slots
     $('#search-slots-btn').click(function() {
         const labId = $('#search-lab').val();
         const date = $('#search-date').val();
         const time = $('#search-time').val();
+
+        console.log('Searching with:', { labId, date, time }); // DEBUG
 
         $.get('/search/slots', { labId, date, time }, function(results) {
             displaySlotResults(results);

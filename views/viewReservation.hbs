@@ -7,11 +7,9 @@
             <label for="filter-lab" class="form-label">Filter by Lab:</label>
             <select id="filter-lab" class="form-select">
                 <option value="">All Labs</option>
-                <option value="A1110">Lab 123 - A1110</option>
-                <option value="A1111">Lab 124 - A1111</option>
-                <option value="A1112">Lab 125 - A1112</option>
-                <option value="A1113">Lab 126 - A1113</option>
-                <option value="A1114">Lab 127 - A1114</option>
+                {{#each labs}}
+                    <option value="{{this.room}}">Lab {{this.labId}} - {{this.room}}</option>
+                {{/each}}
             </select>
         </div>
         <div class="col-md-3">
